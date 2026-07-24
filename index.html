@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-  <title>彩虹电影院 | Rainbow Cinema</title>
+  <title>Rainbow Cinema</title>
   <style>
     :root{
       --bg:#120b2f;
@@ -125,18 +125,18 @@
         <div class="cover-card">
           <div class="cover-overlay">
             <div class="glass">
-              <div class="kicker">Rainbow Cinema · 彩虹电影院</div>
-              <h1 class="title">穿进电影世界，<br>找到最先打动你的故事</h1>
-              <p class="subtitle">Step into the movie world and find the stories that move you.</p>
-              <p class="intro">你收到一张来历不明的电影票。
-检票员告诉你：
-今晚你可以穿进一部电影，成为主角，或者改写主角命运的人。
-你会进入怎样的故事？
-你会先被哪一种情绪、关系和世界吸引？
-做完这组选择题，我们会为你匹配一条最适合入门 Pride 电影世界的路线。</p>
+              <div class="kicker">Rainbow Cinema </div>
+              <h1 class="title">Step into the movie world,<br>find the story that touches you first.</h1>
+              <p class="subtitle">Every story deserves to be seen. Every way of loving deserves to be celebrated.</p>
+              <p class="intro">You receive a mysterious movie ticket.
+The usher tells you:
+Tonight, you may step into a film and become either the protagonist or the person who changes the main characters' fate.
+What kind of story will you enter?
+What emotions, relationships, and worlds will draw you in first?
+Answer these questions and we'll match you with the Pride movie journey that best fits you.</p>
               <div class="actions">
-                <button class="btn" id="startBtn">开始测试 Start</button>
-                <button class="btn secondary" id="howBtn">玩法说明</button>
+                <button class="btn" id="startBtn">Start Quiz</button>
+                <button class="btn secondary" id="howBtn">How It Works</button>
               </div>
             </div>
           </div>
@@ -155,11 +155,11 @@
           <h2 id="qTitle" class="question-title"></h2>
           <div id="options"></div>
           <div class="nav">
-            <button class="btn secondary" id="prevBtn">上一题</button>
-            <button class="btn" id="nextBtn">下一题</button>
+            <button class="btn secondary" id="prevBtn">Previous</button>
+            <button class="btn" id="nextBtn">Next</button>
           </div>
         </div>
-        <div class="footer-note">单选题 · 12 题 · 结果将匹配为 4 条 Pride 观影推荐路线之一</div>
+        <div class="footer-note">12 Questions · Single Choice · Discover Your Pride Movie Route</div>
       </div>
     </section>
 
@@ -173,10 +173,10 @@
             <div id="resultSub" class="result-sub"></div>
             <p id="resultDesc" class="result-desc"></p>
             <div id="tieNote" class="note hidden"></div>
-            <div class="note">请前往公司前台抽取你的专属 Pride 电影小卡。<br>Please go to the reception desk to draw your Pride movie card.</div>
+            <div class="note">Explore your movie recommendations based on this route.</div>
             <div class="actions">
-              <button class="btn" id="restartBtn">再测一次 Retry</button>
-              <button class="btn secondary" id="backCoverBtn">返回封面 Home</button>
+              <button class="btn" id="restartBtn">Retry</button>
+              <button class="btn secondary" id="backCoverBtn">Home</button>
             </div>
           </div>
         </div>
@@ -188,138 +188,138 @@
   <script>
     const questions = [
       {
-        title: 'Q1. 你穿越进电影世界，首先可以选择自己的“初始设定”。你会选——',
+        title: 'Q1. As you step into a movie world, you can choose your starting role. Which would you pick?',
         options: [
-          '别的都先放一放，先拥有一段会让人心跳加速、后劲很长的关系。',
-          '带着“想为世界做点什么”的使命进场，就算没有超能力，也想成为推动改变的人。',
-          '不急着定义自己，先保留一点迷茫和好奇，边走边长大。',
-          '自己是否闪耀没那么重要，更希望成为别人生命里那个温柔、可靠、接得住人的存在。'
+          'First things first: a relationship that makes your heart race.',
+          'I want to enter with a mission to change the world, even without superpowers.',
+          'I would rather stay curious and explore who I am as the story unfolds.',
+          'I hope to be a warm, reliable presence in someone else’s life.'
         ]
       },
       {
-        title: 'Q2. 电影的第一幕出现了。你更想看到哪种画面？',
+        title: 'Q2. The opening scene begins. What do you most want to see?',
         options: [
-          '夏天、风、眼神停顿、还没说出口的话。',
-          '人群、标语、会议、历史拐点即将发生。',
-          '校园、青春、秘密、第一次意识到“原来我和别人不太一样”。',
-          '饭桌、家庭、朋友、日常里那些有点笨拙但很真实的关心。'
+          'Summer, a breeze, lingering glances, and words left unsaid.',
+          'Crowds, movements, meetings, and a turning point in history.',
+          'School life, youth, secrets, and realizing you are different.',
+          'Family dinners, friendships, and everyday moments of care'
         ]
       },
       {
-        title: 'Q3. 你拿到一项特殊能力：可以改写主角人生里的一个变量。你会改哪一个？',
+        title: 'Q3. You gain the power to change one thing in the protagonist’s life. What would it be?',
         options: [
-          '让本来错过的人，至少拥有一次真正靠近彼此的机会。',
-          '让主角所处的时代或制度，少一点压迫，多一点公正。',
-          '让主角更早一点理解自己，不必绕那么远的路。',
-          '让主角身边至少有一个人，从头到尾都坚定站在主角这一边。'
+          'Give two people who missed each other one real chance to connect.',
+          'Make the world a little fairer and less oppressive.',
+          'Help the protagonist understand themselves sooner.',
+          'Ensure someone supports the main characters from beginning to end.'
         ]
       },
       {
-        title: 'Q4. 如果你在电影里拥有一处“安全基地”，你会把它布置成——',
+        title: 'Q4. If you could create a safe space in the movie, what would it look like?',
         options: [
-          '一个适合心动和告白的空间，安静、私密、有余温。',
-          '一个可以讨论、组织、发声的地方，哪怕不大，也要有力量感。',
-          '一个能慢慢发呆、思考、记录自我变化的角落。',
-          '一个随时欢迎别人进来的空间，吃点东西、聊聊天、被理解一下。'
+          'A quiet and intimate place for connection and cofession.',
+         'A place for discussion, organizing, and speaking up.',
+          'A corner to reflect, dream, and document personal growth.',
+          'A welcoming space for food, conversation, and understanding.'
         ]
       },
       {
-        title: 'Q5. 你最想体验哪种“电影式瞬间”？',
+        title: Q5. Which cinematic moment would you most like to experience?'
         options: [
-          '和某个人之间那种“所有人都没看见，但你们都懂了”的一秒。',
-          '明知道困难重重，还是决定站出来的那一刻。',
-          '原来一直说不清的感受，突然被自己说清楚了。',
-          '某个原本不被看好的关系，慢慢从误解变成了接纳。'
+          'A silent moment when no one else notices, but both of you understand.',
+          'The moment you stand up despite knowing the odds are against you.',
+          'Finally finding the words to express something you’ve always felt.',
+          'A relationship gradually transforming from misunderstanding into acceptance.'
         ]
       },
       {
-        title: 'Q6. 如果这部电影中途必须出现一次冲突，你更希望冲突来自——',
+        title: 'Q6. If the story must include conflict, where should it come from?',
         options: [
-          '“相爱不难，相守很难”的遗憾和拉扯。',
-          '个体和时代、权力、规则之间的硬碰硬。',
-          '自我认同、成长阵痛和关系里的不确定。',
-          '家庭、朋友或社会关系中的偏见、误会与重新理解。'
+          'The challenge of staying together even when love exists.',
+          'The clash between individuals and systems of power.',
+          'Questions of identity, growth, and uncertainty.',
+          'Prejudice, misunderstanding, and the struggle toward acceptance.'
         ]
       },
       {
-        title: 'Q7. 你进入片场后，导演让你挑一个“最重要的关键词”。你会选——',
-        options: ['心动','改变','成长','陪伴']
+        title: 'Q7. The director asks you to choose one keyword. Which do you pick?',
+        options: ['Love','Change','Growth','Support']
       },
       {
-        title: 'Q8. 电影快到高潮时，你更希望主角面对的问题是——',
+        title: 'Q8. As the story reaches its climax, what question should the protagonist face?',
         options: [
-          '“如果爱是真的，我要不要冒险承认它？”',
-          '“如果沉默更安全，我还要不要继续发声？”',
-          '“如果我暂时还不确定自己是谁，也算在前进吗？”',
-          '“如果我不是故事中心，我的支持还重要吗？”'
+          'If this love is real, should I risk admitting it?',
+          'If silence is safer, should I still speak up?'',
+          'If I am not sure who I am yet, am I still moving forward?',
+          'If I am not the main character, does my support still matter?'
         ]
       },
       {
-        title: 'Q9. 你更愿意成为哪种角色？',
+        title: 'Q9. Which role would you rather play?',
         options: [
-          '会被人反复想起的那段感情本身。',
-          '把个体命运和更大世界连接起来的人。',
-          '仍在学习如何成为自己的人。',
-          '让别人终于敢做自己的人。'
+          'A relationship people never forget.',
+          'Someone connecting personal stories to a larger world.。',
+          'Someone still learning how to become themselves.',
+          'Someone who helps others be themselves.。'
         ]
       },
       {
-        title: 'Q10. 放映前，电影院送你一张友情提示卡。你会愿意接住哪一种情绪？',
+        title: 'Q10. Before the screening starts, what emotion are you most willing to embrace?',
         options: [
-          '看完可能会想很久，适合深夜回味。',
-          '看完可能会想去查资料、讨论历史、重新看待现实。',
-          '看完可能会想起自己的青春、秘密和成长时刻。',
-          '看完可能会觉得被治愈，也更能理解别人的处境。'
+          'A story that lingers in your mind long after it ends.',
+          'A story that inspires discussion and reflection.',
+          'A story that reminds you of youth, secrets, and self-discovery.',
+          'A story that heals and deepens empathy.'
         ]
       },
       {
-        title: 'Q11. 电影结束后，你最希望自己从座位上带走什么？',
+        title: 'Q11. When the credits roll, what do you hope to take away?',
         options: [
-          '一种“爱过就已经改变了我”的余韵。',
-          '一种“原来故事也可以成为行动”的力量。',
-          '一种“原来迷茫也是成长的一部分”的安慰。',
-          '一种“理解与支持，其实本身就是很重要的爱”的温度。'
+          'The feeling that love has changed me.',
+          'The belief that stories can inspire action.',
+          'The comfort of knowing uncertainty is part of growth.',
+          'The warmth of knowing support is a form of love.'
         ]
       },
       {
-        title: 'Q12. 最后一题。彩虹电影院的出口分成四条路，你会先走哪一条？',
+        title: 'Q12. The cinema exit splits into four paths. Which one do you walk down first?',
         options: [
-          '通往海边、果园、厨房、窗边和没说出口的感情。',
-          '通往街头、会议室、法庭和时代记忆。',
-          '通往学校、宿舍、青春、秘密和自我发现。',
-          '通往家庭、朋友、日常、笑声和被接住的人生。'
+          'A path toward oceans, orchards, kitchens, and unspoken feelings.',
+          'A path toward streets, courtrooms, meeting rooms, and history.',
+          'A path toward schools, friendships, youth, and self-discovery.',
+          'A path toward family, everyday life, laughter, and belonging.'
         ]
       }
     ];
 
     const routeMeta = {
       A: {
-        code:'LOVE-R', cls:'route-love', title:'心动恋爱线', en:'Romantic Route',
+        code:'LOVE-R', cls:'route-love', title:'Heartfelt Romance Route', en:'Romantic Route',
         img:'LOVE-R.png',
-        desc:'你更容易被爱本身打动——那些细腻、克制、余味很长的瞬间，总会最先击中你。你适合从情感浓度高、氛围感强的 Pride 故事开始。'
+        desc:'You are moved most deeply by love itself—the quiet moments, lingering emotions, and relationships that stay with you long after the credits roll.'
       },
       B: {
-        code:'VOIC-E', cls:'route-voice', title:'时代议题线', en:'Advocate Route',
+        code:'VOIC-E', cls:'route-voice', title:'Social Impact Route', en:'Advocate Route',
         img:'VOIC-E.png',
-        desc:'你关注的不只是故事本身，更是故事与时代、规则、现实之间的碰撞。你会被那些把个体命运与更大世界连接起来的叙事吸引。'
+        desc:'You are drawn to stories that connect personal lives with broader social change, history, and justice.'
       },
       C: {
-        code:'SEED-S', cls:'route-seed', title:'青春成长线', en:'Grower Route',
+        code:'SEED-S', cls:'route-seed', title:'Coming-of-Age Route', en:'Grower Route',
         img:'SEED-S.png',
-        desc:'你会被“成为自己”的过程打动。探索、试错、心动、迷茫……这些细碎又真实的成长瞬间，往往正是最让你共鸣的故事入口。'
+        desc:'You connect most strongly with stories about self-discovery, growth, uncertainty, and becoming who you are.'
       },
       D: {
-        code:'ALLY-S', cls:'route-ally', title:'关系治愈线', en:'Supporter Route',
+        code:'ALLY-S', cls:'route-ally', title:'Connection & Support Route', en:'Supporter Route',
         img:'ALLY-S.png',
-        desc:'你最看重关系里的理解、支持与陪伴。你会被那些让人感到被接住、被看见、被温柔对待的 Pride 故事吸引。'
+        desc:'You connect most strongly with stories about self-discovery, growth, uncertainty, and becoming who you are.'
       }
     };
 
     const tieNotes = {
-      'AC':'并列加权：细腻成长向爱情片（A + C）',
-      'BD':'并列加权：带社会现实但入口较友好的作品（B + D）',
-      'AD':'并列加权：关系温暖、情感可感的作品（A + D）',
-      'BC':'并列加权：成长中带现实压力的作品（B + C）'
+      'AC':'A blend of romance and personal growth.',
+      'BD':'Socially conscious stories with an approachable entry point.',
+      'AD':'Heartwarming stories centered on relationships and connection.',
+      'BC':'Coming-of-age stories shaped by real-world challenges.'
     };
 
     const state = { current:0, answers:Array(questions.length).fill(null) };
@@ -362,7 +362,7 @@
       });
       prevBtn.disabled = state.current === 0;
       prevBtn.style.opacity = state.current === 0 ? .45 : 1;
-      nextBtn.textContent = state.current === questions.length - 1 ? '查看结果' : '下一题';
+      nextBtn.textContent = state.current === questions.length - 1 ? 'View Result' : 'Next';
     }
 
     function getResult(){
@@ -386,7 +386,7 @@
 
       // Fallback for 3-way or 4-way ties: choose gentlest entry route D, then C, then A, then B.
       const fallback = ['D','C','A','B'].find(k => winners.includes(k));
-      return { route: fallback, tie:'分数非常接近：已为你优先分配更轻松、易进入的观影起点。', scores };
+      return { route: fallback, tie:'Your scores were very close. We have matched you with the most accessible starting route.', scores };
     }
 
     function renderResult(){
@@ -422,12 +422,12 @@
 
     document.getElementById('startBtn').onclick = () => { state.current = 0; show(quizScreen); renderQuestion(); };
     document.getElementById('howBtn').onclick = () => {
-      alert('玩法：\n1) 共 12 题，每题单选。\n2) 题目表面是故事选择，实际在匹配你的 Pride 观影入坑路线。\n3) 完成后会生成一张专属路线卡，请前往公司前台抽取你的本命 Pride 电影小卡。');
+      alert('How It Works:\n1) 1. Complete all 12 single-choice questions. Your answers will reveal the Pride movie journey that best matches you.');
     };
     prevBtn.onclick = () => { if (state.current > 0) { state.current -= 1; renderQuestion(); } };
     nextBtn.onclick = () => {
       if (!state.answers[state.current]) {
-        alert('请先选择一个选项。');
+        alert('Please select an option first');
         return;
       }
       if (state.current === questions.length - 1) {
