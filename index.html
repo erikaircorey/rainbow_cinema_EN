@@ -1,0 +1,453 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>彩虹电影院 | Rainbow Cinema</title>
+  <style>
+    :root{
+      --bg:#120b2f;
+      --card:#fff8f2;
+      --text:#231942;
+      --muted:#6b6385;
+      --pink:#ff6fa8;
+      --purple:#7d59d1;
+      --green:#5ea85f;
+      --gold:#e6a93d;
+      --shadow:0 10px 30px rgba(26,18,56,.18);
+      --radius:24px;
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0;
+      font-family: -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"PingFang SC","Microsoft YaHei",sans-serif;
+      color:var(--text);
+      background: radial-gradient(circle at top, #2a175f 0, #120b2f 50%, #0d0820 100%);
+      overflow:hidden;
+    }
+    .app{height:100%; width:100%; position:relative;}
+    .screen{
+      position:absolute; inset:0; display:none; overflow:auto; -webkit-overflow-scrolling:touch;
+      padding: max(18px, env(safe-area-inset-top)) 16px max(18px, env(safe-area-inset-bottom));
+    }
+    .screen.active{display:block}
+    .phone-shell{
+      width:min(100%, 520px);
+      margin:0 auto;
+      min-height:calc(100dvh - 32px);
+      display:flex;
+      flex-direction:column;
+      gap:14px;
+    }
+    .panel{
+      background: rgba(255,255,255,.92);
+      backdrop-filter: blur(6px);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+    }
+    .btn{
+      border:0; border-radius:999px; padding:14px 18px; font-size:16px; font-weight:700; cursor:pointer;
+      background: linear-gradient(90deg,#ff6fa8,#8d68ff,#57c785,#f3c145);
+      color:white; box-shadow: 0 8px 20px rgba(0,0,0,.18);
+    }
+    .btn.secondary{background:#eee;color:#352b54;box-shadow:none}
+    .btn:active{transform:translateY(1px)}
+    .cover-card{
+      position:relative; overflow:hidden; min-height: calc(100dvh - 32px); border-radius:28px; box-shadow: var(--shadow);
+      background: #1e1247;
+    }
+    .cover-card::before{
+      content:""; position:absolute; inset:0; background-image:url(cover.png);
+      background-size: cover; background-position:center top; filter:none;
+    }
+    .cover-overlay{
+      position:absolute; inset:0; background: linear-gradient(180deg, rgba(8,5,20,.25) 0%, rgba(8,5,20,.28) 42%, rgba(8,5,20,.80) 100%);
+      display:flex; flex-direction:column; justify-content:flex-end; padding:18px;
+    }
+    .glass{
+      background: rgba(255,248,242,.95); border-radius:24px; padding:18px; box-shadow: var(--shadow);
+    }
+    .kicker{font-size:12px; font-weight:800; letter-spacing:.08em; color:#7b5cc9; text-transform:uppercase}
+    .title{font-size:26px; line-height:1.08; margin:6px 0 10px; font-weight:900}
+    .subtitle{font-size:14px; color:var(--muted); line-height:1.55; margin:0}
+    .intro{font-size:14px; line-height:1.65; color:#372e5a; white-space:pre-line}
+    .actions{display:flex; gap:10px; margin-top:14px}
+    .progress-wrap{display:flex; align-items:center; gap:10px; padding:10px 14px}
+    .progress{height:10px; flex:1; background:#eadff7; border-radius:999px; overflow:hidden}
+    .bar{height:100%; width:0%; background:linear-gradient(90deg,#ff6fa8,#8d68ff,#57c785,#f3c145); transition:width .25s ease}
+    .progress-text{font-size:12px; font-weight:800; color:#5c527e; min-width:52px; text-align:right}
+    .question-card{padding:18px}
+    .question-num{font-size:13px;font-weight:900;color:#7d59d1;letter-spacing:.04em}
+    .question-title{font-size:22px; line-height:1.35; margin:8px 0 18px; font-weight:900}
+    .option{display:block; width:100%; text-align:left; background:#fff; border:2px solid #eee8fb; border-radius:20px; padding:14px 14px 14px 58px; position:relative; margin:10px 0; cursor:pointer; transition:.2s}
+    .option:hover{border-color:#c9b7f3; transform:translateY(-1px)}
+    .option .badge{position:absolute; left:14px; top:14px; width:30px; height:30px; border-radius:999px; display:grid; place-items:center; background:#f4effd; color:#6f55be; font-weight:900}
+    .option .txt{font-size:15px; line-height:1.6; color:#2f2750}
+    .option.selected{border-color:#8d68ff; background:#faf7ff; box-shadow:0 6px 18px rgba(125,89,209,.12)}
+    .nav{display:flex; justify-content:space-between; gap:10px; margin-top:14px}
+    .result-top{padding:16px 16px 0}
+    .result-image{width:100%; border-radius:24px; overflow:hidden; box-shadow: var(--shadow); background:#fff}
+    .result-image img{display:block; width:100%; height:auto}
+    .result-copy{padding:18px}
+    .result-tag{display:inline-block; padding:8px 12px; border-radius:999px; font-weight:900; color:#fff; margin:8px 0 12px; font-size:14px}
+    .route-love{background:#ff6fa8}
+    .route-voice{background:#7d59d1}
+    .route-seed{background:#5ea85f}
+    .route-ally{background:#e6a93d}
+    .result-title{font-size:26px; line-height:1.15; margin:0 0 4px; font-weight:900}
+    .result-sub{font-size:14px; color:var(--muted); margin-bottom:8px; font-weight:700}
+    .result-desc{font-size:15px; line-height:1.72; color:#332a56; margin:0 0 12px}
+    .note{font-size:13px; line-height:1.65; color:#5d537d; background:#f7f2ff; border-radius:18px; padding:12px 14px; margin:10px 0 14px}
+    .footer-note{font-size:13px; color:#665c84; text-align:center; padding:10px 8px 18px}
+    .hidden{display:none!important}
+    @media (min-width: 640px){
+      .screen{padding:18px}
+      .cover-card{min-height: min(920px, calc(100vh - 36px));}
+    }
+  </style>
+
+  <!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-8WPNW7F55D"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-8WPNW7F55D');
+</script>
+  
+</head>
+<body>
+  <div id="app" class="app">
+    <section id="cover" class="screen active" aria-label="cover screen">
+      <div class="phone-shell">
+        <div class="cover-card">
+          <div class="cover-overlay">
+            <div class="glass">
+              <div class="kicker">Rainbow Cinema · 彩虹电影院</div>
+              <h1 class="title">穿进电影世界，<br>找到最先打动你的故事</h1>
+              <p class="subtitle">Step into the movie world and find the stories that move you.</p>
+              <p class="intro">你收到一张来历不明的电影票。
+检票员告诉你：
+今晚你可以穿进一部电影，成为主角，或者改写主角命运的人。
+你会进入怎样的故事？
+你会先被哪一种情绪、关系和世界吸引？
+做完这组选择题，我们会为你匹配一条最适合入门 Pride 电影世界的路线。</p>
+              <div class="actions">
+                <button class="btn" id="startBtn">开始测试 Start</button>
+                <button class="btn secondary" id="howBtn">玩法说明</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="quiz" class="screen" aria-label="quiz screen">
+      <div class="phone-shell">
+        <div class="panel progress-wrap">
+          <div class="progress"><div id="bar" class="bar"></div></div>
+          <div id="progressText" class="progress-text">1 / 12</div>
+        </div>
+        <div class="panel question-card">
+          <div id="qNum" class="question-num">QUESTION 1</div>
+          <h2 id="qTitle" class="question-title"></h2>
+          <div id="options"></div>
+          <div class="nav">
+            <button class="btn secondary" id="prevBtn">上一题</button>
+            <button class="btn" id="nextBtn">下一题</button>
+          </div>
+        </div>
+        <div class="footer-note">单选题 · 12 题 · 结果将匹配为 4 条 Pride 观影推荐路线之一</div>
+      </div>
+    </section>
+
+    <section id="result" class="screen" aria-label="result screen">
+      <div class="phone-shell">
+        <div class="panel result-top">
+          <div class="result-image"><img id="resultImg" src="" alt="route card"></div>
+          <div class="result-copy">
+            <div id="resultTag" class="result-tag">LOVE-R</div>
+            <h2 id="resultTitle" class="result-title"></h2>
+            <div id="resultSub" class="result-sub"></div>
+            <p id="resultDesc" class="result-desc"></p>
+            <div id="tieNote" class="note hidden"></div>
+            <div class="note">请前往公司前台抽取你的专属 Pride 电影小卡。<br>Please go to the reception desk to draw your Pride movie card.</div>
+            <div class="actions">
+              <button class="btn" id="restartBtn">再测一次 Retry</button>
+              <button class="btn secondary" id="backCoverBtn">返回封面 Home</button>
+            </div>
+          </div>
+        </div>
+        <div class="footer-note">Every story deserves to be seen. Every way of loving deserves to be celebrated.</div>
+      </div>
+    </section>
+  </div>
+
+  <script>
+    const questions = [
+      {
+        title: 'Q1. 你穿越进电影世界，首先可以选择自己的“初始设定”。你会选——',
+        options: [
+          '别的都先放一放，先拥有一段会让人心跳加速、后劲很长的关系。',
+          '带着“想为世界做点什么”的使命进场，就算没有超能力，也想成为推动改变的人。',
+          '不急着定义自己，先保留一点迷茫和好奇，边走边长大。',
+          '自己是否闪耀没那么重要，更希望成为别人生命里那个温柔、可靠、接得住人的存在。'
+        ]
+      },
+      {
+        title: 'Q2. 电影的第一幕出现了。你更想看到哪种画面？',
+        options: [
+          '夏天、风、眼神停顿、还没说出口的话。',
+          '人群、标语、会议、历史拐点即将发生。',
+          '校园、青春、秘密、第一次意识到“原来我和别人不太一样”。',
+          '饭桌、家庭、朋友、日常里那些有点笨拙但很真实的关心。'
+        ]
+      },
+      {
+        title: 'Q3. 你拿到一项特殊能力：可以改写主角人生里的一个变量。你会改哪一个？',
+        options: [
+          '让本来错过的人，至少拥有一次真正靠近彼此的机会。',
+          '让主角所处的时代或制度，少一点压迫，多一点公正。',
+          '让主角更早一点理解自己，不必绕那么远的路。',
+          '让主角身边至少有一个人，从头到尾都坚定站在主角这一边。'
+        ]
+      },
+      {
+        title: 'Q4. 如果你在电影里拥有一处“安全基地”，你会把它布置成——',
+        options: [
+          '一个适合心动和告白的空间，安静、私密、有余温。',
+          '一个可以讨论、组织、发声的地方，哪怕不大，也要有力量感。',
+          '一个能慢慢发呆、思考、记录自我变化的角落。',
+          '一个随时欢迎别人进来的空间，吃点东西、聊聊天、被理解一下。'
+        ]
+      },
+      {
+        title: 'Q5. 你最想体验哪种“电影式瞬间”？',
+        options: [
+          '和某个人之间那种“所有人都没看见，但你们都懂了”的一秒。',
+          '明知道困难重重，还是决定站出来的那一刻。',
+          '原来一直说不清的感受，突然被自己说清楚了。',
+          '某个原本不被看好的关系，慢慢从误解变成了接纳。'
+        ]
+      },
+      {
+        title: 'Q6. 如果这部电影中途必须出现一次冲突，你更希望冲突来自——',
+        options: [
+          '“相爱不难，相守很难”的遗憾和拉扯。',
+          '个体和时代、权力、规则之间的硬碰硬。',
+          '自我认同、成长阵痛和关系里的不确定。',
+          '家庭、朋友或社会关系中的偏见、误会与重新理解。'
+        ]
+      },
+      {
+        title: 'Q7. 你进入片场后，导演让你挑一个“最重要的关键词”。你会选——',
+        options: ['心动','改变','成长','陪伴']
+      },
+      {
+        title: 'Q8. 电影快到高潮时，你更希望主角面对的问题是——',
+        options: [
+          '“如果爱是真的，我要不要冒险承认它？”',
+          '“如果沉默更安全，我还要不要继续发声？”',
+          '“如果我暂时还不确定自己是谁，也算在前进吗？”',
+          '“如果我不是故事中心，我的支持还重要吗？”'
+        ]
+      },
+      {
+        title: 'Q9. 你更愿意成为哪种角色？',
+        options: [
+          '会被人反复想起的那段感情本身。',
+          '把个体命运和更大世界连接起来的人。',
+          '仍在学习如何成为自己的人。',
+          '让别人终于敢做自己的人。'
+        ]
+      },
+      {
+        title: 'Q10. 放映前，电影院送你一张友情提示卡。你会愿意接住哪一种情绪？',
+        options: [
+          '看完可能会想很久，适合深夜回味。',
+          '看完可能会想去查资料、讨论历史、重新看待现实。',
+          '看完可能会想起自己的青春、秘密和成长时刻。',
+          '看完可能会觉得被治愈，也更能理解别人的处境。'
+        ]
+      },
+      {
+        title: 'Q11. 电影结束后，你最希望自己从座位上带走什么？',
+        options: [
+          '一种“爱过就已经改变了我”的余韵。',
+          '一种“原来故事也可以成为行动”的力量。',
+          '一种“原来迷茫也是成长的一部分”的安慰。',
+          '一种“理解与支持，其实本身就是很重要的爱”的温度。'
+        ]
+      },
+      {
+        title: 'Q12. 最后一题。彩虹电影院的出口分成四条路，你会先走哪一条？',
+        options: [
+          '通往海边、果园、厨房、窗边和没说出口的感情。',
+          '通往街头、会议室、法庭和时代记忆。',
+          '通往学校、宿舍、青春、秘密和自我发现。',
+          '通往家庭、朋友、日常、笑声和被接住的人生。'
+        ]
+      }
+    ];
+
+    const routeMeta = {
+      A: {
+        code:'LOVE-R', cls:'route-love', title:'心动恋爱线', en:'Romantic Route',
+        img:'LOVE-R.png',
+        desc:'你更容易被爱本身打动——那些细腻、克制、余味很长的瞬间，总会最先击中你。你适合从情感浓度高、氛围感强的 Pride 故事开始。'
+      },
+      B: {
+        code:'VOIC-E', cls:'route-voice', title:'时代议题线', en:'Advocate Route',
+        img:'VOIC-E.png',
+        desc:'你关注的不只是故事本身，更是故事与时代、规则、现实之间的碰撞。你会被那些把个体命运与更大世界连接起来的叙事吸引。'
+      },
+      C: {
+        code:'SEED-S', cls:'route-seed', title:'青春成长线', en:'Grower Route',
+        img:'SEED-S.png',
+        desc:'你会被“成为自己”的过程打动。探索、试错、心动、迷茫……这些细碎又真实的成长瞬间，往往正是最让你共鸣的故事入口。'
+      },
+      D: {
+        code:'ALLY-S', cls:'route-ally', title:'关系治愈线', en:'Supporter Route',
+        img:'ALLY-S.png',
+        desc:'你最看重关系里的理解、支持与陪伴。你会被那些让人感到被接住、被看见、被温柔对待的 Pride 故事吸引。'
+      }
+    };
+
+    const tieNotes = {
+      'AC':'并列加权：细腻成长向爱情片（A + C）',
+      'BD':'并列加权：带社会现实但入口较友好的作品（B + D）',
+      'AD':'并列加权：关系温暖、情感可感的作品（A + D）',
+      'BC':'并列加权：成长中带现实压力的作品（B + C）'
+    };
+
+    const state = { current:0, answers:Array(questions.length).fill(null) };
+    const order = ['A','B','C','D'];
+
+    const coverScreen = document.getElementById('cover');
+    const quizScreen = document.getElementById('quiz');
+    const resultScreen = document.getElementById('result');
+    const qNum = document.getElementById('qNum');
+    const qTitle = document.getElementById('qTitle');
+    const optionsWrap = document.getElementById('options');
+    const bar = document.getElementById('bar');
+    const progressText = document.getElementById('progressText');
+    const prevBtn = document.getElementById('prevBtn');
+    const nextBtn = document.getElementById('nextBtn');
+
+    function show(screen){
+      [coverScreen, quizScreen, resultScreen].forEach(s=>s.classList.remove('active'));
+      screen.classList.add('active');
+      screen.scrollTop = 0;
+    }
+
+    function renderQuestion(){
+      const q = questions[state.current];
+      qNum.textContent = `QUESTION ${state.current + 1}`;
+      qTitle.textContent = q.title;
+      progressText.textContent = `${state.current + 1} / ${questions.length}`;
+      bar.style.width = `${((state.current + 1)/questions.length)*100}%`;
+      optionsWrap.innerHTML = '';
+      q.options.forEach((opt, idx) => {
+        const key = order[idx];
+        const btn = document.createElement('button');
+        btn.className = 'option' + (state.answers[state.current]===key ? ' selected' : '');
+        btn.innerHTML = `<span class="badge">${key}</span><span class="txt">${opt}</span>`;
+        btn.onclick = () => {
+          state.answers[state.current] = key;
+          renderQuestion();
+        };
+        optionsWrap.appendChild(btn);
+      });
+      prevBtn.disabled = state.current === 0;
+      prevBtn.style.opacity = state.current === 0 ? .45 : 1;
+      nextBtn.textContent = state.current === questions.length - 1 ? '查看结果' : '下一题';
+    }
+
+    function getResult(){
+      const scores = {A:0,B:0,C:0,D:0};
+      state.answers.forEach(a => { if(a) scores[a] += 1; });
+      const max = Math.max(...Object.values(scores));
+      const winners = Object.keys(scores).filter(k => scores[k] === max);
+
+      if (winners.length === 1) return { route:winners[0], tie:null, scores };
+
+      const pair = winners.sort().join('');
+      if (pair.length === 2 && tieNotes[pair]) {
+        const preferred = {
+          'AC':'A',
+          'BD':'B',
+          'AD':'D',
+          'BC':'C'
+        }[pair];
+        return { route: preferred, tie: tieNotes[pair], scores };
+      }
+
+      // Fallback for 3-way or 4-way ties: choose gentlest entry route D, then C, then A, then B.
+      const fallback = ['D','C','A','B'].find(k => winners.includes(k));
+      return { route: fallback, tie:'分数非常接近：已为你优先分配更轻松、易进入的观影起点。', scores };
+    }
+
+    function renderResult(){
+      const { route, tie, scores } = getResult();
+      const meta = routeMeta[route];
+      const tag = document.getElementById('resultTag');
+      const title = document.getElementById('resultTitle');
+      const sub = document.getElementById('resultSub');
+      const desc = document.getElementById('resultDesc');
+      const img = document.getElementById('resultImg');
+      const tieNote = document.getElementById('tieNote');
+
+      tag.className = 'result-tag ' + meta.cls;
+      tag.textContent = meta.code;
+      title.textContent = meta.title;
+      sub.textContent = meta.en;
+      desc.textContent = meta.desc;
+      img.src = meta.img;
+      img.alt = `${meta.title} / ${meta.en}`;
+      if (tie) {
+        tieNote.textContent = tie;
+        tieNote.classList.remove('hidden');
+      } else {
+        tieNote.classList.add('hidden');
+        tieNote.textContent = '';
+      }
+      
+  gtag('event', 'result', {
+    result_type: meta.code
+  });
+
+    }
+
+    document.getElementById('startBtn').onclick = () => { state.current = 0; show(quizScreen); renderQuestion(); };
+    document.getElementById('howBtn').onclick = () => {
+      alert('玩法：\n1) 共 12 题，每题单选。\n2) 题目表面是故事选择，实际在匹配你的 Pride 观影入坑路线。\n3) 完成后会生成一张专属路线卡，请前往公司前台抽取你的本命 Pride 电影小卡。');
+    };
+    prevBtn.onclick = () => { if (state.current > 0) { state.current -= 1; renderQuestion(); } };
+    nextBtn.onclick = () => {
+      if (!state.answers[state.current]) {
+        alert('请先选择一个选项。');
+        return;
+      }
+      if (state.current === questions.length - 1) {
+        renderResult();
+        show(resultScreen);
+      } else {
+        state.current += 1;
+        renderQuestion();
+      }
+    };
+    document.getElementById('restartBtn').onclick = () => {
+      state.current = 0;
+      state.answers = Array(questions.length).fill(null);
+      renderQuestion();
+      show(quizScreen);
+    };
+    document.getElementById('backCoverBtn').onclick = () => show(coverScreen);
+
+    // Preload assets
+    ["cover.png","LOVE-R.png","VOIC-E.png","SEED-S.png","ALLY-S.png"].forEach(src=>{ const i=new Image(); i.src=src; });
+  </script>
+</body>
+</html>
